@@ -1,3 +1,4 @@
 function sum(m, n) {
-  // ваш код...
+ return m+n
 }
+console.log (`Сумма чисел 5 и 6 = ${sum(5,6)}`)
