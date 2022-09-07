@@ -18,7 +18,7 @@ b_r.addEventListener(`click`,()=>{
 })
 
 b_l.addEventListener(`click`,()=>{
-  if ((count=>-(slides-1)*w) && (count<0)) {
+  if ((count>=-(slides-1)*w) && (count<0)) {
     count+=w
     console.log (count)
     c_in.style.transform = `translateX(${count}px)`
