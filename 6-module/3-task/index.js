@@ -25,7 +25,8 @@ export default class Carousel {
  elem = this.carousel
 
   constructor(slides) {
-  this.carousel.append(this.nav1,this.nav2,this.inner)
+    let slideNumber = 0; // Добавили счётчик номера слайда
+    this.carousel.append(this.nav1,this.nav2,this.inner)
     this.slides = slides;
     let c_l = this.slides.length
     for (let i=0;i<c_l;i++) {
@@ -38,27 +39,34 @@ export default class Carousel {
     }
   
     this.nav2.style.display = 'none'
-    let w = this.inner.querySelector(`.carousel__img`).width
-    let count = null
     this.carousel.addEventListener(`click`,(e)=>{
 
-     if (e.target.parentNode.className == `carousel__arrow carousel__arrow_right`||e.target.className == `carousel__arrow carousel__arrow_right`){
-      if (count>-(c_l-1)*w) {
-        count-=w
-        this.inner.style.transform = `translateX(${count}px)`
-        count == - (c_l-1)*w ? this.nav1.style.display = 'none' : 
-        count == - (c_l-3)*w ? this.nav2.style.display = '' : false
-      }}
+     if (e.target.closest('.carousel__arrow_right')){
+      slideNumber++;
+      this.nav2.style.display = ''
+      if (slides.length - 1 === slideNumber) {
+        e.target.closest('.carousel__arrow_right').style.display = 'none';
+      } else {
+        e.target.closest('.carousel__arrow_right').style.display = '';
+      }
+      let offset = -this.elem.offsetWidth * slideNumber;
+      this.inner.style.transform = `translateX(${offset}px)`;
+    }
 
-     if (e.target.parentNode.className == `carousel__arrow carousel__arrow_left`||e.target.className == `carousel__arrow carousel__arrow_left`){
-      if ((count >= -(c_l-1)*w) && (count<0)) {
-        count+=w
-        this.inner.style.transform = `translateX(${count}px)`
-        count == - (c_l-2)*w ? this.nav1.style.display = '' : 
-        count == 0 ? this.nav2.style.display = 'none' : false
-      }}
+     if (e.target.closest('.carousel__arrow_left')){
+      this.nav1.style.display = ''
+      slideNumber--;
+      if (slideNumber === 0) {
+        e.target.closest('.carousel__arrow_left').style.display = 'none';
+      } else {
+        e.target.closest('.carousel__arrow_left').style.display = '';
+      }
+      let offset = -this.elem.offsetWidth * slideNumber;
+      this.inner.style.transform = `translateX(${offset}px)`;
 
-      if (e.target.parentNode.className == `carousel__button` || e.target.className==`carousel__button`) {
+      }
+
+      if (e.target.closest(`.carousel__button`)){
         let id =null
         e.target.parentNode.className == `carousel__button`? id = e.target.parentNode.parentNode.parentNode.dataset.id :
         id =e.target.parentNode.parentNode.dataset.id
@@ -72,8 +80,3 @@ export default class Carousel {
  
   }
 }
-
-// name: 'Chicken springrolls',
-//     price: 6.5,
-//     image: 'chicken_loempias.png',
-//     id: 'chicken-springrolls'
