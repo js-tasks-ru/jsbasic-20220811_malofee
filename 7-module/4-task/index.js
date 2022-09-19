@@ -80,7 +80,7 @@ export default class StepSlider {
          bubbles:true
        }))
     
-  })
+  }, { once: true })
 
   })
 
