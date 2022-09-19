@@ -37,51 +37,91 @@ export default class StepSlider {
   let progress = this.elem.querySelector('.slider__progress');
   let thumb = this.elem.querySelector(`.slider__thumb`)
   thumb.ondragstart = ()=>{false}
-
-
+  let segments = this.categoties - 1;
+  let approximateValue,value,left,leftRelative,leftPercents  = null
   thumb.addEventListener(`pointerdown`,(e)=>{
  
   let onMouseMove = e => {
 
     this.elem.classList.add(`slider_dragging`)
-
-    let sliderWidth = this.elem.offsetWidth
-    thumb.style.left = Math.round(e.pageX -this.elem.getBoundingClientRect().left) + `px`
-    let coordinate = e.pageX 
-    let paddingLeft = this.elem.getBoundingClientRect().left
-    let realPercents = ((coordinate-paddingLeft)/sliderWidth)*100
-    if (coordinate <= paddingLeft){
-      thumb.style.left = 0 +`px`
-      coordinate = paddingLeft
-    }   else if (coordinate-paddingLeft>=sliderWidth) {
-      thumb.style.left = sliderWidth +`px`
-      coordinate = sliderWidth + paddingLeft
-      realPercents = 100
+    left = e.clientX - this.elem.getBoundingClientRect().left;
+    leftRelative = left / this.elem.offsetWidth;
+    if (leftRelative < 0) {
+      leftRelative = 0;
     }
-
-     this.number = Math.round((coordinate-paddingLeft)/sliderWidth*(this.categoties-1))
+    
+    if (leftRelative > 1) {
+      leftRelative = 1;
+    }
+    leftPercents = leftRelative * 100;
+    thumb.style.left = `${leftPercents}%`;
+    progress.style.width = `${leftPercents}%`;
+    approximateValue = leftRelative * segments;
+    value= Math.round(approximateValue);
      this.spans_array.forEach(item=>{item.classList.remove(`slider__step-active`)})
-     this.leftPercents = this.number*this.step_Percent;
-     this.elem.querySelector(`.slider__value`).innerHTML = this.number
-     progress.style.width = `${realPercents}%`;
+     this.spans_array[value].classList.add(`slider__step-active`)
+     this.elem.querySelector(`.slider__value`).innerHTML = value
+
+  
   }
 
   document.addEventListener(`pointermove`,onMouseMove) 
 
   document.addEventListener(`pointerup`,()=>{
+
     document.removeEventListener(`pointermove`,onMouseMove) 
     this.elem.classList.remove(`slider_dragging`)
-    thumb.style.left = `${this.leftPercents}%`;
-    progress.style.width = `${this.leftPercents}%`;
-    this.spans_array[this.number].classList.add(`slider__step-active`)
+    thumb.style.left = `${value*this.step_Percent}%`;
+    progress.style.width = `${value*this.step_Percent}%`;
+    this.spans_array[value].classList.add(`slider__step-active`)
 
+
+    
     this.elem.dispatchEvent(new CustomEvent(`slider-change`,{
-         detail: this.number,
+         detail: value,
          bubbles:true
        }))
     
   }, { once: true })
 
+  })
+
+
+  this.elem.addEventListener(`click`,e=>{
+    left = e.clientX - this.elem.getBoundingClientRect().left;
+    leftRelative = left / this.elem.offsetWidth;
+    if (leftRelative < 0) {
+      leftRelative = 0;
+    }
+    
+    if (leftRelative > 1) {
+      leftRelative = 1;
+    }
+    leftPercents = leftRelative * 100;
+    thumb.style.left = `${leftPercents}%`;
+    progress.style.width = `${leftPercents}%`;
+    approximateValue = leftRelative * segments;
+    value= Math.round(approximateValue);
+     this.spans_array.forEach(item=>{item.classList.remove(`slider__step-active`)})
+     this.spans_array[value].classList.add(`slider__step-active`)
+     this.elem.querySelector(`.slider__value`).innerHTML = value
+    thumb.style.left = `${value*this.step_Percent}%`;
+    progress.style.width = `${value*this.step_Percent}%`;
+
+
+     
+    this.elem.dispatchEvent(new CustomEvent(`slider-change`,{
+      detail: value,
+      bubbles:true
+    }))
+
+
+
+
+
+
+    
+    
   })
 
   }
