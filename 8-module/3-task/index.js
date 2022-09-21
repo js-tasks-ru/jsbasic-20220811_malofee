@@ -3,32 +3,77 @@ export default class Cart {
 
   constructor(cartIcon) {
     this.cartIcon = cartIcon;
+
   }
 
+
   addProduct(product) {
-    // ваш код
+    
+
+ if (product!=undefined && product!=null){
+  let cartItem = {}
+
+  let find_index = this.cartItems.findIndex((item) => {
+    return item.product.id == product.id
+  });
+  
+  if (find_index == -1) {
+    cartItem= {product,count:1}
+    this.cartItems.push (cartItem)
+  } else {
+    this.cartItems[find_index].count++
+    cartItem = this.cartItems[find_index]
+  }
+  this.onProductUpdate(cartItem)
+ }
+
   }
 
   updateProductCount(productId, amount) {
-    // ваш код
+    let cartItem={}
+
+    let find_index = this.cartItems.findIndex(item=>{
+    return item.product.id == productId
+   })
+    
+   if (find_index!=-1) {
+    amount ==1 ? this.cartItems[find_index].count++:
+    this.cartItems[find_index].count--
+    this.cartItems[find_index].count == 0? 
+    this.cartItems.splice(find_index,1) : cartItem = this.cartItems[find_index]
+   }
+
+   this.onProductUpdate(cartItem)
+  //  console.log (this.cartItems)
+
   }
 
   isEmpty() {
-    // ваш код
+  return this.cartItems.length == 0 
+   
   }
 
   getTotalCount() {
-    // ваш код
+    let count = null
+    this.cartItems.forEach(item => count+=item.count)
+    return count 
+   
+   
   }
 
   getTotalPrice() {
-    // ваш код
+     let price = null
+     this.cartItems.forEach(item => {
+     item.count == 1 ? price+=item.product.price:
+     price+=item.count*item.product.price
+     })
+     return price
+    
+    
   }
 
   onProductUpdate(cartItem) {
-    // реализуем в следующей задаче
-
-    this.cartIcon.update(this);
+  this.cartIcon.update(this)
   }
-}
 
+}
