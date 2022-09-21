@@ -17,6 +17,8 @@ export default class Cart {
     return item.product.id == product.id
   });
   
+
+
   if (find_index == -1) {
     cartItem= {product,count:1}
     this.cartItems.push (cartItem)

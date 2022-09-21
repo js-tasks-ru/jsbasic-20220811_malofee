@@ -49,7 +49,7 @@ export default class CartIcon {
 
    let leftIndent = Math.min(padding_container1,padding_container2)+ `px`
 
-
+  
    Object.assign(this.elem.style, {
     position: 'fixed',
     top: '50px',
